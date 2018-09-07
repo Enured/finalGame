@@ -8,6 +8,7 @@ var ctx = canvas.getContext('2d')
 var score = 0;
 var clones = []
 var kybers = []
+var puntajes =[]
 var interval;
 var frames = 0;
 var images = {
@@ -32,7 +33,7 @@ class Board{
             this.draw()
         }
         this.music = new Audio()
-        this.music.src = "http://66.90.93.122/ost/star-wars-episode-iii-revenge-of-the-sith-playstation-2-gamerip/drjjjhyt/1%20-%20mus_ui_anivictory_lp.mp3"
+        this.music.src = "./images/Duel Of The Fates Theme Version 2 (No Copyright).mp3"
     }
 draw(){
 this.x-=2
@@ -139,6 +140,19 @@ class Kyber{
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
     }
 }
+class Puntaje{
+    constructor(p,x,y){
+        this.x = x
+        this.y = y
+        this.p = p
+    }
+    drawPuntaje(){ 
+        
+     ctx.font = '20px VT323'
+     ctx.fillStyle='white'
+     ctx.fillText(this.p, this.x, this.y)
+    }  
+}
 
 
 //instancias
@@ -152,6 +166,9 @@ function update(){
     board.draw()
     ahsoka.draw()
     drawRays()
+    if(score>=5){
+        ganaste()
+    }
     //clones
     generateclones()
     drawClones()
@@ -159,9 +176,21 @@ function update(){
     raysAndClones()
     drawKybers()
     generateKybers()
+    drawPts()
     //collectKybers()
 }
 
+function ganaste(){
+    clearInterval(interval)
+    ctx.font = "80px "
+    ctx.fillStyle = "rgb(75, 238, 116)"
+    ctx.fillText("You Won", 370,80)
+    ctx.font = "50px Verdana"
+    ctx.fillStyle = "rgb(75,213,238)"
+    ctx.fillText("Press 'ESC' to restart", 315,120)
+    interval = null
+    board.music.pause()
+ }
 function start(){
     if(interval) return
     clones = []
@@ -171,16 +200,31 @@ function start(){
 }
 function gameOver(){
     clearInterval(interval)
-    ctx.font = "80px "
-    ctx.fillText("Game Over", 128,512,)
-    ctx.font = "50px Verdana"
-    ctx.fillStyle = "white"
-    ctx.fillText("Press 'upkey' to restart", 50,300)
+    ctx.font = "60px "
+    ctx.fillStyle = "orange"
+    ctx.fillText("Game Over", 350,80)
+    ctx.font = "30px Verdana"
+    ctx.fillStyle = "rgb(75,213,238)"
+    ctx.fillText("Press 'ESC' to restart", 315,120)
     interval = null
     board.music.pause()
 }
 
 //funciones auxiliares
+function generatePts(p, x, y){
+    var pts = new Puntaje(p,x,y)
+    puntajes.push(pts)
+}
+
+function drawPts(){
+    puntajes.forEach(function(p, i){
+        p.drawPuntaje()
+        setTimeout(function(){
+            puntajes.splice(i,1)
+        }, 300)
+    })
+}
+
 function raysAndClones(){
     ahsoka.force.forEach(function(ray, rI){
         clones.forEach(function(clone, cI){
@@ -192,8 +236,6 @@ function raysAndClones(){
     })
     
 }
-
-
 
 function generateclones(){
     if(frames % 20 === Math.floor(Math.random() * 200)){
@@ -235,7 +277,8 @@ function checkCollitions(){
     kybers.forEach(function(k,id){
         if( ahsoka.crashWith(k) ){
             score++
-            kybers.splice(id,1)
+            kybers.splice(id,1) 
+            generatePts('+1',ahsoka.x+27, ahsoka.y-5)
         }
     })
     
@@ -267,11 +310,10 @@ addEventListener('keydown', function(e){
 
    if(e.keyCode === 27){
     start()
+    board.music.currentTime=0;
+    board.music.play()
+    score=0;
    }
 
-   if(e.key = "Enter"){
-       start()
-       board.music.play()
-   }
-
+   
 })
