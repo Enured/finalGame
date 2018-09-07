@@ -1,0 +1,18 @@
+section{
+  display:flex;
+  justify-content:center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+img{
+  display: flex
+  justify-content: flex-end;
+
+}
+
+body{
+  margin:0 ;
+  padding:0 ;
+  background-image: url(images/star-wars-starburst-hyper-space-effect_rse18xtu__F0000.png);
+}
