@@ -114,7 +114,7 @@ class Clone{
                 (this.x + this.width > item.x) &&
                 (this.y < item.y + item.height) &&
                 (this.y + this.height > item.y)
-        if(crash) console.log('le diste')
+       
         return crash;
     }
     draw(){
